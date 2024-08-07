@@ -1,4 +1,5 @@
-# fruit-task-service
+# Task Server framework
+#### entropical.ai
 
 Run command:
 
