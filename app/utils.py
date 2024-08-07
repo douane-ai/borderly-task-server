@@ -1,16 +1,15 @@
 from celery import shared_task
 import os
-from openai import AzureOpenAI
+from openai import OpenAI
 import numpy as np
 import langwatch
 from langwatch.types import RAGChunk
 import requests
-from base64 import b64encode
 
-openai = AzureOpenAI(
-    azure_endpoint=os.environ["AZURE_OPENAI_ENDPOINT"].strip("/"), 
-    api_version=os.environ["AZURE_CHAT_COMPLETIONS_VERSION"],  
-    api_key=os.environ["AZURE_OPENAI_KEY"],
+NOCODB_TOKEN = os.getenv("NOCODB_TOKEN")
+
+openai = OpenAI(
+    api_key=os.environ["OPENAI_API_KEY"],
     max_retries=5
 )
 
@@ -38,7 +37,7 @@ def error_handler(request, exc, traceback):
 
 
 def query_embedding(query: str):
-    response = openai.embeddings.create(input=query, model=os.environ["AZURE_TEXT_EMBEDDING_NAME"])
+    response = openai.embeddings.create(input=query, model="text-embedding-ada-002")
     return response.data[0].embedding
 
 def generate_answer(prompt, multiple_choice=False):
@@ -48,7 +47,7 @@ def generate_answer(prompt, multiple_choice=False):
         messages=[
             {'role': 'user', 'content': prompt.strip()}
         ],
-        model=os.environ["AZURE_CHAT_COMPLETIONS_DEPLOYMENT_NAME"],
+        model="gpt-4o",
         temperature=0.1,
         logprobs=True
     )

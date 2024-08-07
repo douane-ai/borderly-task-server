@@ -21,7 +21,7 @@ from tasks import summarize
 
 # map to task names
 class TaskName(Enum):
-    SummarizeText = "SummarizeText"
+    SummarizeFinding = "SummarizeFinding"
 
 class Job(BaseModel):
     task: TaskName
